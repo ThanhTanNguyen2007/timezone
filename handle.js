@@ -1,25 +1,18 @@
 const fs = require("fs");
 
-handleData = async () => {
-  let rawdata = fs.readFileSync("./data.json");
+const data = require("./data");
 
-  let data = JSON.parse(rawdata);
+const newData = data.map((x) => {
+  const index = x.indexOf(")");
+  return {
+    label: x,
+    tzCode: x.slice(index + 2),
+    utc: x.slice(1, index),
+  };
+});
 
-  data = data.map((x) => {
-    return {
-      label: `${x.country}/${x.city} (${x.utc.replace("UTC", "GMT")})`,
-      tzCode: `${x.country}/${x.city}`,
-      name: `(${x.utc.replace("UTC", "GMT")}) ${x.city.replace("_", " ")} time`,
-      utc: `${x.utc.substring(4)}`,
-      city: x.city,
-      country: x.country,
-    };
-  });
+(async () => await Promise.all(newData))();
+let dataStr = JSON.stringify(newData);
+fs.writeFileSync("testTZ.json", dataStr);
 
-  fs.writeFile("timezone.json", JSON.stringify(data), (err) => {
-    if (err) return console.log(err);
-    console.log(data);
-  });
-};
-
-handleData();
+console.log(newData);
