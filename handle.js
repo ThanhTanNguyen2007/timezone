@@ -7,6 +7,11 @@ const newData = data.map((x) => {
   return {
     label: x,
     tzCode: x.slice(index + 2),
+    name: x
+      .slice(index + 2)
+      .replace("/", "_")
+      .replace(" ", "_")
+      .replace("-", "_"),
     utc: x.slice(1, index),
   };
 });
